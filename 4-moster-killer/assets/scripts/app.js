@@ -56,19 +56,25 @@ adjustHealthBars(chosenMaxLife);
  * 어떻게 해결할 수 있는지 모르겠음.
  */
 const gameOver = () => {
+  // consume bonus life
   if (playerHealthBar.value <= 0 && bonusLife) {
     alert("consume player's bonus life");
     // consume bonus life
     consumeBonusLife();
   }
+  // game over condition
   if (monsterHealthBar.value <= 0 && playerHealthBar.value > 0) {
     alert('player win');
-    resetGame(chosenMaxLife);
   } else if (playerHealthBar.value <= 0 && monsterHealthBar.value > 0) {
     alert('Monster win');
-    resetGame(chosenMaxLife);
   } else if (playerHealthBar.value <= 0 && monsterHealthBar.value <= 0) {
     alert('draw');
+  }
+
+  // game reset
+  if (monsterHealthBar.value <= 0 || playerHealthBar.value <= 0) {
+    addBonusLifeEl();
+    bonusLife = true;
     resetGame(chosenMaxLife);
   }
 };

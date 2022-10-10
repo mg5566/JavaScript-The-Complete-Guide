@@ -39,6 +39,11 @@ function removeBonusLife() {
   bonusLifeEl.parentNode.removeChild(bonusLifeEl);
 }
 
+function addBonusLifeEl() {
+  const tempEL = document.getElementById('health-levels');
+  tempEL.children[2].appendChild(bonusLifeEl);
+}
+
 function setPlayerHealth(health) {
   playerHealthBar.value = health;
 }
