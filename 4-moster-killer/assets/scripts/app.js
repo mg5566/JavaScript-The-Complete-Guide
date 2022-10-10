@@ -27,7 +27,21 @@ const HEAL_VALUE = 20;
  */
 let bonusLife = true;
 
-let chosenMaxLife = 100;
+/**
+ * monst 와 player 의 최대체력 설정하기
+ *
+ * @description
+ * 게임이 시작되면 최대체력 설정을 prompt 를 통해서 입력받습니다.
+ * @description
+ * 만약 number 가 아닌 다른 type 의 value 를 입력받는 경우, 100 으로 자동 세팅됩니다.
+ */
+const PROMPT_MESSAGE = `enter the maximum health for player and monster
+if you enter Not a Number or negative or zero, maximun health is set 100`;
+let enteredValue = prompt(PROMPT_MESSAGE, '100');
+let chosenMaxLife = parseInt(enteredValue);
+if (isNaN(chosenMaxLife) || chosenMaxLife <= 0) {
+  chosenMaxLife = 100;
+}
 // let currentMonsterHealth = chosenMaxLife;
 // let currentPlayerHealth = chosenMaxLife;
 
