@@ -16,23 +16,6 @@ let chosenMaxLife = 100;
 adjustHealthBars(chosenMaxLife);
 
 /**
- * ATTACK logic
- *
- * 공격 logic 입니다. mode 에 따라서 일반 공격, 강한 공격을 합니다.
- *
- * @param { 'normal' | 'strong' } mode
- */
-const attack = (mode) => {
-    if (mode === 'normal') {
-        dealMonsterDamage(PLAYER_NORMAL_ATTACK_VALUE);
-        dealPlayerDamage(MONSTER_ATTACK_VALUE);
-    } else if (mode === 'strong') {
-        dealMonsterDamage(PLAYER_STRONG_ATTACK_VALUE);
-        dealPlayerDamage(MONSTER_ATTACK_VALUE);
-    }
-};
-
-/**
  * GAME OVER
  *
  * 해당 조건을 만족하면 game 을 종료시킵니다.
@@ -64,6 +47,27 @@ const gameOver = () => {
 };
 
 /**
+ * ATTACK logic
+ *
+ * 공격 logic 입니다. mode 에 따라서 일반 공격, 강한 공격을 합니다.
+ * 공격 이후, game over 조건을 확인합니다.
+ *
+ * @param { 'normal' | 'strong' } mode
+ */
+const attack = (mode) => {
+    // conditional attack
+    if (mode === 'normal') {
+        dealMonsterDamage(PLAYER_NORMAL_ATTACK_VALUE);
+        dealPlayerDamage(MONSTER_ATTACK_VALUE);
+    } else if (mode === 'strong') {
+        dealMonsterDamage(PLAYER_STRONG_ATTACK_VALUE);
+        dealPlayerDamage(MONSTER_ATTACK_VALUE);
+    }
+    // game over
+    gameOver();
+};
+
+/**
  * 공격 EVENT HANDLER
  *
  * attack button 을 클릭하면 공격 event 가 발생하고, 해당 handler 가 동작합니다.
@@ -72,8 +76,6 @@ const gameOver = () => {
 const attackHandler = () => {
     // normal attack
     attack('normal');
-    // gameover
-    gameOver();
 };
 
 attackBtn.addEventListener('click', attackHandler);
@@ -84,8 +86,6 @@ attackBtn.addEventListener('click', attackHandler);
 const strongAttackHandler = () => {
     // strong attack
     attack('strong');
-    // game over
-    gameOver();
 };
 
 strongAttackBtn.addEventListener('click', strongAttackHandler);
