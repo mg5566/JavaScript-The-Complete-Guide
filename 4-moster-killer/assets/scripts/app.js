@@ -28,7 +28,7 @@ const HEAL_VALUE = 20;
 let bonusLife = true;
 
 /**
- * monst 와 player 의 최대체력 설정하기
+ * monster 와 player 의 최대체력 설정하기
  *
  * @description
  * 게임이 시작되면 최대체력 설정을 prompt 를 통해서 입력받습니다.
@@ -39,13 +39,56 @@ const PROMPT_MESSAGE = `enter the maximum health for player and monster
 if you enter Not a Number or negative or zero, maximun health is set 100`;
 let enteredValue = prompt(PROMPT_MESSAGE, '100');
 let chosenMaxLife = parseInt(enteredValue);
+// check entered value
 if (isNaN(chosenMaxLife) || chosenMaxLife <= 0) {
   chosenMaxLife = 100;
 }
-// let currentMonsterHealth = chosenMaxLife;
-// let currentPlayerHealth = chosenMaxLife;
 
 adjustHealthBars(chosenMaxLife);
+
+/**
+ * LOG VALUES
+ *
+ * @description
+ * log 작성에 필요한 log value 들을 정의합니다.
+ *
+ * TODO: 해당 constance value 들을 enum type 으로 정의합니다. 그리고 write log 와 battlelog 의 type 에서 사용해야합니다.
+ */
+const LOG_GAME_START = 'GAME START';
+const LOG_PLAYER_NORMAL_ATTACK = 'PLAYER NORMAL ATTACK';
+const LOG_PLAYER_STRONG_ATTACK = 'PLAYER STRONG ATTACK';
+const LOG_MONSTER_ATTACK = 'MONSTER ATTACK';
+const LOG_PLAYER_HEAL = 'PLAYER HEAL';
+const LOG_CONSUME_BONUS_LIFE = 'PLAYER CONSUME BONUS LIFE';
+const LOG_GAME_OVER = 'GAME OVER';
+// who win?!
+const LOG_PLAYER_WIN = 'PLAYER WIN';
+const LOG_MONSTER_WIN = 'MONSTER WIN';
+const LOG_DRAW = 'DRAW';
+
+/**
+ * WRITE LOG
+ *
+ * @description
+ * log 작성합니다.
+ *
+ * @type [{ event: string, value: number }]
+ */
+const battleLog = [];
+/**
+ * LOG 작성
+ *
+ * @description
+ * event 와 value 를 사용하여 log entry 를 생성하고, battle log 에 추가합니다.
+ *
+ * @param event {LOG_GAME_START | LOG_PLAYER_NORMAL_ATTACK | LOG_PLAYER_STRONG_ATTACK | LOG_MONSTER_ATTACK | LOG_PLAYER_HEAL | LOG_CONSUME_BONUS_LIFE | LOG_GAME_OVER}
+ * @param value {number}
+ */
+const writeLog = (event, value) => {
+  const logEntry = { event, value }
+  battleLog.unshift(logEntry);
+}
+writeLog(LOG_GAME_START, chosenMaxLife);
 
 /**
  * GAME OVER
@@ -78,15 +121,19 @@ const gameOver = () => {
   }
   // game over condition
   if (monsterHealthBar.value <= 0 && playerHealthBar.value > 0) {
+    writeLog(LOG_PLAYER_WIN);
     alert('player win');
   } else if (playerHealthBar.value <= 0 && monsterHealthBar.value > 0) {
+    writeLog(LOG_MONSTER_WIN);
     alert('Monster win');
   } else if (playerHealthBar.value <= 0 && monsterHealthBar.value <= 0) {
+    writeLog(LOG_DRAW);
     alert('draw');
   }
 
   // game reset
   if (monsterHealthBar.value <= 0 || playerHealthBar.value <= 0) {
+    writeLog(LOG_GAME_OVER);
     addBonusLifeEl();
     bonusLife = true;
     resetGame(chosenMaxLife);
@@ -105,9 +152,11 @@ const gameOver = () => {
 const attack = (mode) => {
   // conditional attack
   if (mode === 'normal') {
+    writeLog(LOG_PLAYER_NORMAL_ATTACK, PLAYER_NORMAL_ATTACK_VALUE);
     dealMonsterDamage(PLAYER_NORMAL_ATTACK_VALUE);
     dealPlayerDamage(MONSTER_ATTACK_VALUE);
   } else if (mode === 'strong') {
+    writeLog(LOG_PLAYER_STRONG_ATTACK, PLAYER_STRONG_ATTACK_VALUE);
     dealMonsterDamage(PLAYER_STRONG_ATTACK_VALUE);
     dealPlayerDamage(MONSTER_ATTACK_VALUE);
   }
@@ -124,6 +173,8 @@ const attack = (mode) => {
  * 이후 game over 조건을 확인합니다, 아마 안죽을 거임.
  */
 const heal = () => {
+  // write log
+  writeLog(LOG_PLAYER_HEAL, HEAL_VALUE);
   // heal player
   increasePlayerHealth(HEAL_VALUE);
   // attack monster to player
@@ -139,6 +190,8 @@ const heal = () => {
  * player 의 보너스 생명을 소비하고, player health 를 최대로 회복시킵니다.
  */
 const consumeBonusLife = () => {
+  // write log
+  writeLog(LOG_CONSUME_BONUS_LIFE, chosenMaxLife);
   // remove bonus life element
   removeBonusLife();
   // set bonus life value to false
@@ -172,3 +225,12 @@ const healHandler = () => {
 };
 
 healBtn.addEventListener('click', healHandler);
+
+
+/**
+ * LOG 출력하기
+ */
+const printLogHandler = () => {
+  console.log(battleLog);
+}
+logBtn.addEventListener('click', printLogHandler);
