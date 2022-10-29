@@ -37,10 +37,33 @@ let bonusLife = true;
  */
 const PROMPT_MESSAGE = `enter the maximum health for player and monster
 if you enter Not a Number or negative or zero, maximun health is set 100`;
-let enteredValue = prompt(PROMPT_MESSAGE, '100');
-let chosenMaxLife = parseInt(enteredValue);
-// check entered value
-if (isNaN(chosenMaxLife) || chosenMaxLife <= 0) {
+
+/**
+ * @description
+ * max life 를 입력받는 function
+ *
+ * @returns {number}
+ */
+const getMaxLifeValue = () => {
+  // get user input
+  let enteredValue = prompt(PROMPT_MESSAGE, '100');
+  // parse input to integer
+  let parsedValue = parseInt(enteredValue);
+
+  // error check
+  if (isNaN(parsedValue) || parsedValue <= 0) {
+    throw { message: 'Invalid user input, not a number!' };
+  }
+
+  return parsedValue;
+}
+
+let chosenMaxLife;
+
+try {
+  chosenMaxLife = getMaxLifeValue();
+} catch (e) {
+  console.log(e);
   chosenMaxLife = 100;
 }
 
