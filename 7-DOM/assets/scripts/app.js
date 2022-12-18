@@ -66,16 +66,16 @@ const deleteMovieHandler = (movieId) => {
   deleteMovieModal.classList.add('visible');
   toggleBackdrop();
 
-  let okDeletemovieModalButton = deleteMovieModal.querySelector('.btn--danger');
+  let okDeleteMovieModalButton = deleteMovieModal.querySelector('.btn--danger');
 
-  okDeletemovieModalButton.replaceWith(okDeletemovieModalButton.cloneNode(true));
+  okDeleteMovieModalButton.replaceWith(okDeleteMovieModalButton.cloneNode(true));
 
-  okDeletemovieModalButton = deleteMovieModal.querySelector('.btn--danger');
+  okDeleteMovieModalButton = deleteMovieModal.querySelector('.btn--danger');
 
   cancelDeleteMovieModalButton.removeEventListener('click', closeDeleteMovieModal);
-  okDeletemovieModalButton.removeEventListener('click', deleteMovie.bind(null, movieId));
+  okDeleteMovieModalButton.removeEventListener('click', deleteMovie.bind(null, movieId));
   cancelDeleteMovieModalButton.addEventListener('click', closeDeleteMovieModal);
-  okDeletemovieModalButton.addEventListener('click', deleteMovie.bind(null, movieId));
+  okDeleteMovieModalButton.addEventListener('click', deleteMovie.bind(null, movieId));
 };
 
 const renderNewMovieElement = (id, title, imageUrl, rating) => {
