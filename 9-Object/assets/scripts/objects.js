@@ -37,7 +37,7 @@ const renderMovies = (filter) => {
     const { info } = movie;
     let text = info.title;
     for (const key in info) {
-      if (key !== 'title') {
+      if (key !== '_title') {
         text += ` - ${key} ${info[key]}`;
       }
     }
@@ -59,11 +59,23 @@ const addMovieHandler = () => {
 
   const newMovie = {
     info: {
-      title,
+      // title,
+      set title(val) {
+        if (val.trim() === '') {
+          this._title = 'DEFAULT';
+          return ;
+        }
+        this._title = val;
+      },
+      get title() {
+        return this._title.toUpperCase();
+      },
       [extraName]: extraValue,
     },
     id: Math.random(),
   }
+  newMovie.info.title = title;
+  console.log(newMovie.info.title);
 
   movies.push(newMovie);
   renderMovies();
@@ -77,3 +89,18 @@ const searchMovieHandler = () => {
 
 addMovieButton.addEventListener('click', addMovieHandler);
 searchMovieButton.addEventListener('click', searchMovieHandler);
+
+const members = {
+  teamName: 'blue nights',
+  people: ['alice', 'bob', 'charlie', 'mike'],
+  getMembers() {
+    this.people.forEach((person) => {
+      console.log(this);
+      console.log(person + ' - ' + this.teamName);
+    })
+  }
+}
+
+console.log(x);
+
+var x = 1;
