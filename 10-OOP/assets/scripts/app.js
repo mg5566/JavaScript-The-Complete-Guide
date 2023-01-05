@@ -10,6 +10,15 @@ class Product {
 class ShoppingCart {
   items = [];
 
+  addProduct(product) {
+    this.items.push(product);
+    this.totalOutput.innerHTML = `<h2>Total \$ ${1}</h2>`
+  }
+
+  order() {
+    console.log('Order now!', this.items);
+  }
+
   render() {
     const cartEl = document.createElement('section');
     cartEl.innerHTML = `
@@ -17,6 +26,9 @@ class ShoppingCart {
       <button>Order Now!</button>
     `;
     cartEl.className = 'cart';
+    cartEl.addEventListener('click', this.order.bind(this));
+
+    this.totalOutput = cartEl.querySelector('h2');
     return cartEl;
   }
 }
@@ -27,7 +39,7 @@ class ProductItem {
   }
 
   addToCart() {
-    console.log('this product', this.product);
+    App.addProductToCart(this.product);
   }
 
   render() {
@@ -40,7 +52,7 @@ class ProductItem {
             <h2>${this.product.title}</h2>
             <h3>\$ ${this.product.price}</h3>
             <p>${this.product.description}</p>
-            <button id="addCartButton">ADD to Cart</button>
+            <button>ADD to Cart</button>
           </div>
         </div>
       `;
@@ -91,8 +103,8 @@ class Shop {
   render() {
     const renderHook = document.getElementById('app');
 
-    const cart = new ShoppingCart();
-    const cartEl = cart.render();
+    this.cart = new ShoppingCart();
+    const cartEl = this.cart.render();
 
     const productList = new ProductList();
     const productListEl = productList.render();
@@ -102,5 +114,18 @@ class Shop {
   }
 }
 
-const shop = new Shop();
-shop.render();
+class App {
+  static cart;  // 가독성을 위해서 꼭 존재해야합니다.
+
+  static init() {
+    const shop = new Shop();
+    shop.render();
+    this.cart = shop.cart;
+  }
+
+  static addProductToCart(product) {
+    this.cart.addProduct(product);
+  }
+}
+
+App.init();
