@@ -7,12 +7,59 @@ class Product {
   }
 }
 
-class ShoppingCart {
+class ElementAttribute {
+  constructor(attrName, attrValue) {
+    this.name = attrName;
+    this.value = attrValue;
+  }
+}
+
+class Component {
+  constructor(renderHookId) {
+    this.hookId = renderHookId;
+  }
+
+  createRootElement(tag, cssClasses, attributes) {
+    const rootElement = document.createElement(tag);
+    if (cssClasses) {
+      rootElement.className = cssClasses;
+    }
+    if (attributes && attributes.length > 0) {
+      attributes.forEach((attribute) => {
+        rootElement.setAttribute(attribute.name, attribute.value);
+      })
+    }
+    document.getElementById(this.hookId).append(rootElement);
+    return rootElement;
+  }
+}
+
+class ShoppingCart extends Component {
   items = [];
 
+  set cartItems(value) {
+    this.items = value;
+    this.totalOutput.innerHTML = `<h2>Total \$ ${this.totalAmount}</h2>`
+  }
+
+  get totalAmount() {
+    const sum = this.items.reduce((previousValue, currentValue) => {
+      return previousValue += currentValue.price;
+    }, 0);
+    return sum;
+  }
+
+  // 강의에서는 constructor 를 추가하는데,
+  // 상속받으면 base class 의 constructor 가 동작함
+  // 그래서 필요없다고 생각함. - 실제로 없어도 잘 동작함.
+  constructor(renderHookId) {
+    super(renderHookId);
+  }
+
   addProduct(product) {
-    this.items.push(product);
-    this.totalOutput.innerHTML = `<h2>Total \$ ${1}</h2>`
+    const updateItems = [...this.items];
+    updateItems.push(product);
+    this.cartItems = updateItems;
   }
 
   order() {
@@ -20,21 +67,20 @@ class ShoppingCart {
   }
 
   render() {
-    const cartEl = document.createElement('section');
+    const cartEl = this.createRootElement('section', 'cart')
     cartEl.innerHTML = `
-      <h2>Total \$ ${0}</h2>
+      <h2>Total \$ ${this.totalAmount}</h2>
       <button>Order Now!</button>
     `;
-    cartEl.className = 'cart';
     cartEl.addEventListener('click', this.order.bind(this));
 
-    this.totalOutput = cartEl.querySelector('h2');
-    return cartEl;
+    this.totalOutput = cartEl.querySelector('h2');  //<h2>Total \$ ${this.totalAmount}</h2>
   }
 }
 
-class ProductItem {
-  constructor(product) {
+class ProductItem extends Component {
+  constructor(product, renderHookId) {
+    super(renderHookId);
     this.product = product;
   }
 
@@ -43,8 +89,7 @@ class ProductItem {
   }
 
   render() {
-    const prodEl = document.createElement('li');
-    prodEl.className = 'product-item';
+    const prodEl = this.createRootElement('li', 'product-item');
     prodEl.innerHTML = `
         <div>
           <img src="${this.product.imageUrl}" alt="${this.product.description}" />
@@ -58,11 +103,10 @@ class ProductItem {
       `;
     const addCartButton = prodEl.querySelector('button');
     addCartButton.addEventListener('click', this.addToCart.bind(this));
-    return prodEl;
   }
 }
 
-class ProductList {
+class ProductList extends Component {
   products = [
     new Product(
       'A Pillow',
@@ -84,18 +128,17 @@ class ProductList {
     ),
   ];
 
-  constructor() {
+  constructor(renderHookId) {
+    super(renderHookId);
   }
 
   render() {
-    const prodList = document.createElement('ul');
-    prodList.className = 'product-list';
+    this.createRootElement('ul', 'product-list', [new ElementAttribute('id', 'prod-list')]);
 
     for (const prod of this.products) {
-      const productItem = new ProductItem(prod);
-      prodList.append(productItem.render());
+      const productItem = new ProductItem(prod, 'prod-list');
+      productItem.render();
     }
-    return prodList;
   };
 }
 
@@ -103,14 +146,12 @@ class Shop {
   render() {
     const renderHook = document.getElementById('app');
 
-    this.cart = new ShoppingCart();
-    const cartEl = this.cart.render();
+    this.cart = new ShoppingCart('app');
+    this.cart.render();
 
-    const productList = new ProductList();
-    const productListEl = productList.render();
+    const productList = new ProductList('app');
+    productList.render();
 
-    renderHook.append(cartEl);
-    renderHook.append(productListEl);
   }
 }
 
