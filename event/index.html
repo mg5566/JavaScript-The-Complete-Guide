@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>event 를! 공부해 보아요.</title>
+  <script src="app.js" defer></script>
+  <style>
+    #fruits {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #fruits li {
+        width: 100px;
+        cursor: pointer;
+    }
+
+    #fruits .active {
+        color: red;
+        text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul id="fruits">
+      <li id="apple" class="active">Apple</li>
+      <li id="banana">Banana</li>
+      <li id="orange">Orange</li>
+    </ul>
+  </nav>
+  <div>선택된 내비게이션 아이템: <em class="msg">apple</em></div>
+  <script>
+    const $fruits = document.getElementById('fruits');
+    const $msg = document.querySelector('.msg');
+
+    // 사용자 클릭에 의해 선택된 내비게이션 아이템(li 요소)에 active 클래스를 추가하고
+    // 그 외의 모든 내비게이션 아이템의 active 클래스르르 제거한다.
+    function activate({ target }) {
+      if (target.match('#fruits > li')) return;
+      [...$fruits.children].forEach($fruits => {
+        $fruits.classList.toggle('active', $fruits === target);
+        $msg.textContent = target.id;
+      })
+    }
+
+    /**
+    document.getElementById('apple').onclick = activate;
+    document.getElementById('banana').onclick = activate;
+    document.getElementById('orange').onclick = activate;
+     */
+    $fruits.onclick = activate;
+  </script>
+</body>
+</html>
