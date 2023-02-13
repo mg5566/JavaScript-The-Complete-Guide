@@ -7,53 +7,27 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>event 를! 공부해 보아요.</title>
   <script src="app.js" defer></script>
-  <style>
-    #fruits {
-        display: flex;
-        list-style-type: none;
-        padding: 0;
-    }
-
-    #fruits li {
-        width: 100px;
-        cursor: pointer;
-    }
-
-    #fruits .active {
-        color: red;
-        text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
-  <nav>
-    <ul id="fruits">
-      <li id="apple" class="active">Apple</li>
-      <li id="banana">Banana</li>
-      <li id="orange">Orange</li>
-    </ul>
-  </nav>
-  <div>선택된 내비게이션 아이템: <em class="msg">apple</em></div>
+  <button class="btn">Click me</button>
+
   <script>
-    const $fruits = document.getElementById('fruits');
-    const $msg = document.querySelector('.msg');
+    const $button = document.querySelector('.btn');
 
-    // 사용자 클릭에 의해 선택된 내비게이션 아이템(li 요소)에 active 클래스를 추가하고
-    // 그 외의 모든 내비게이션 아이템의 active 클래스르르 제거한다.
-    function activate({ target }) {
-      if (target.match('#fruits > li')) return;
-      [...$fruits.children].forEach($fruits => {
-        $fruits.classList.toggle('active', $fruits === target);
-        $msg.textContent = target.id;
-      })
-    }
+    // 버튼 요소에 click 커스텀 이벤트 핸들러 등록
+    // 커스텀 이벤트를 이스패치하기 이전에 이벤트 핸들러를 등록해야 한다.
+    $button.addEventListener('click', (e) => {
+      console.log(e);
+      alert(`${e} clicked`);
+    });
 
-    /**
-    document.getElementById('apple').onclick = activate;
-    document.getElementById('banana').onclick = activate;
-    document.getElementById('orange').onclick = activate;
-     */
-    $fruits.onclick = activate;
+    // 커스텀 이벤트 생성
+    // const customEvent = new MouseEvent('click');
+    const customEvent = new CustomEvent('foo', {
+      detail: { message: 'Hello' }
+    });
+    // 커스텀 이벤트 디스패ㅣ(동기 처리), click 이벤트가 방생한다.
+    $button.dispatchEvent(customEvent);
   </script>
 </body>
 </html>
